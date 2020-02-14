@@ -1,0 +1,387 @@
+/*
+********************************************************************************************
+ File Name: HW Lab1 Q1
+ Author:    Sharon Cao
+ Date:    Date: 1/30/2020
+ Description: 
+ 1. Write a program to insert an element to singly linked list in terms of reverse index,
+ such as given a=head->11->12->13-> NULL, after calling function
+ insert_rev_index(a, 1, 123), and then new linked list will be
+ head->11->12->123->13-> NULL. And if calling insert_rev_index(a, 0, 456), the
+ new one should be head->11->12->123->13-> 456->NULL
+*********************************************************************************************
+*/
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef int ElemType;
+
+typedef  struct  Lnode
+{
+    ElemType  data;
+    struct   Lnode  *next;
+}LNode;
+
+void printList(LNode* list){
+  printf("Head");
+  while(1){
+    printf("->");
+    list = list->next;
+    if(list == NULL){
+      printf("NULL");
+      exit(0);
+    }
+    else if(list->next == NULL) {
+      printf("%d->NULL\n", list->data);
+      break;
+    }
+    else
+      printf("%d",list->data);
+  }
+}
+
+LNode  *create_LinkList(void){    
+  int data;
+  LNode *head, *p, *q;
+  head=p=(LNode *)malloc(sizeof(LNode)); 
+  head->next=NULL;       
+  do{ 
+      scanf("%d",& data);
+      q= (LNode  *)malloc(sizeof(LNode)); 
+      q->data=data;     
+      q->next=p->next;  
+      p->next=q; 
+      p=q ; 
+  }while(getchar()!='\n');
+  return (head);
+}
+
+LNode  *push(LNode* head, int data){
+  LNode *p;
+  p= (LNode  *) malloc( sizeof(LNode));
+  p->data = data;
+  p->next=head->next;
+  head->next=p;
+  //printList(head);
+  return (head);
+}
+
+LNode *reverse(LNode* L)
+{
+  LNode *head, *p;
+  int data;
+  head = (LNode *) malloc (sizeof(LNode));
+  head->next = NULL;
+  p=L->next;
+  while (p != NULL)
+  {
+      data = p->data;
+      //printf("%d", data);
+      head = push (head, data);
+      //printList(head);
+      p = p->next;
+  }
+  return (head);
+}
+
+LNode  *Insert_LNode(LNode *L, int i, ElemType e) {   
+    int  j=0;  
+    LNode *p,*q;
+    p=L;
+    while(p!=NULL && j!=i) {  
+      p=p->next;  
+      j++;   
+    }
+    if(p==NULL)     
+        printf("i is too big OR i is 0!!\n"); 
+  
+    else{  
+        q=(LNode*)malloc(sizeof(LNode));
+        q->data=e;   
+        q->next=p->next;
+        p->next=q;
+    }
+    return (L);
+}
+
+
+LNode *insert_rev_index(LNode *L, int index, int elem)
+{
+  LNode *rList, *addL, *newL;
+  rList = reverse(L);
+  addL = Insert_LNode( rList, index, elem);
+  newL = reverse(addL);
+  return (newL);
+}
+
+int main(void) {
+  LNode *a, *b;
+  a = create_LinkList();
+  printf("Original Linked list is: \n");
+  printList(a);
+  b = insert_rev_index(a, 1, 123);
+  printf("The new Linked list is: \n");
+  printList(b);
+  b = insert_rev_index(b, 0, 456);
+  printf("The new Linked list is: \n");
+  printList(b);
+  return 0;
+}
+
+/* Sample Output
+11 12 13
+Original Linked list is:
+Head->11->12->13->NULL
+The new Linked list is:
+Head->11->12->123->13->NULL
+The new Linked list is:
+Head->11->12->123->13->456->NULL
+*/
+
+
+
+/*
+********************************************************************************************
+ File Name: HW Lab1 Q2
+ Author:    Sharon Cao
+ Date:    Date: 1/30/2020
+ Description: 
+ 2. Create a function to concatenate two singly linked list, like
+ ls1= head->4->2->1-> NULL, and ls2= head->5->7->3-> NULL. From function
+ call concat_linked_list(ls1, ls2), the result is head->4->2->1->5->7->3->NULL
+*********************************************************************************************
+*/
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef int ElemType;
+
+typedef  struct  Lnode
+{
+    ElemType  data;
+    struct   Lnode  *next;
+}LNode;
+
+void printList(LNode* list){
+  printf("Head");
+  while(1){
+    printf("->");
+    list = list->next;
+    if(list == NULL){
+      printf("NULL");
+      exit(0);
+    }
+    else if(list->next == NULL) {
+      printf("%d->NULL\n", list->data);
+      break;
+    }
+    else
+      printf("%d",list->data);
+  }
+}
+
+LNode  *create_LinkList(void){    
+  int data;
+  LNode *head, *p, *q;
+  head=p=(LNode *)malloc(sizeof(LNode)); 
+  head->next=NULL;       
+  do{ 
+      scanf("%d",& data);
+      q= (LNode  *)malloc(sizeof(LNode)); 
+      q->data=data;     
+      q->next=p->next;  
+      p->next=q; 
+      p=q ; 
+  }while(getchar()!='\n');
+  return (head);
+}
+
+LNode *concat_linked_list(LNode *ls1, LNode *ls2)
+{
+  LNode *Lc, *p1, *p2;
+  Lc = ls1;
+  p1 = ls1 ->next;
+  p2 = ls2;
+  while (p1 -> next != NULL)
+  {
+    p1 = p1->next;
+  }
+  p1->next = p2->next;
+  return (Lc);
+
+}
+
+int main(void) {
+  LNode *a, *b, *c;
+  a = create_LinkList();
+  printf("Linked list one is: ");
+  printList(a);
+  b = create_LinkList();
+  printf("Linked list one is: ");
+  printList(b);
+  c = concat_linked_list(a, b);
+  printf("The conected linked list is: ");
+  printList(c);
+  return 0;
+}
+/*Sample Output
+4 2 1
+Linked list one is: Head->4->2->1->NULL
+5 7 3
+Linked list one is: Head->5->7->3->NULL
+The conected linked list is: Head->4->2->1->5->7->3->NULL
+*/
+
+
+/*
+3. Find minimum value and maximum value by functions for a given singly linked list
+with int type or char type node value, such as lst= head->3->1->2->NULL by
+calling a = min_int_linked_list(lst), a will be 1; if lst=head->C->A->B->NULL,
+and a = min_char_linked_list(lst), a is A. Likewise, the same principle is for
+getting max value, like max_int_linked_list(lst) and max_char_linked_list(lst)
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef int ElemType;
+
+typedef  struct  Lnode
+{
+    ElemType  data;
+    struct   Lnode  *next;
+}LNode;
+
+void printList(LNode* list){
+  printf("Head");
+  while(1){
+    printf("->");
+    list = list->next;
+    if(list == NULL){
+      printf("NULL");
+      exit(0);
+    }
+    else if(list->next == NULL) {
+      printf("%d->NULL\n", list->data);
+      break;
+    }
+    else
+      printf("%d",list->data);
+  }
+}
+
+LNode  *create_LinkList(void){
+  int data;
+  LNode *head, *p, *q;
+  head=p=(LNode *)malloc(sizeof(LNode));
+  head->next=NULL;
+  do{
+      scanf("%d",& data);
+      q= (LNode  *)malloc(sizeof(LNode));
+      q->data=data;
+      q->next=p->next;
+      p->next=q;
+      p=q ;
+  }while(getchar()!='\n');
+  return (head);
+}
+
+int min_int_linked_list(LNode *L)
+{
+  int small;
+  LNode *p, *q;
+  p=L;
+  q=L->next;
+  small = p->data;
+  if (q == NULL)
+  {
+      printf("Empty List");
+  }
+  else{
+    while (q != NULL)
+  {
+    if (small <= q->data)
+  {
+    p=q;
+    q=q->next;
+  }
+  else{
+    small = q->data;
+    p=q;
+    q=q->next;
+  }
+  }
+  //printf("%d", small);
+  return small;
+  }
+
+}
+
+int max_int_linked_list(LNode *L)
+{
+  int large;
+  LNode *p, *q;
+  p=L;
+  q=L->next;
+  large = q->data;
+  if (q == NULL)
+  {
+    printf("Empty List");
+  }
+  else{
+    while (q != NULL)
+  {
+    if (large <= q->data)
+  {
+    large = q->data;
+    p=q;
+    q=q->next;
+  }
+  else{
+    p=q;
+    q=q->next;
+  }
+  }
+  //printf("%d", large);
+  return large;
+  }
+
+}
+
+int main(void) {
+  LNode *a;
+  int min, large;
+  printf("Enter elements for linked list: ");
+  a = create_LinkList();
+  printf("Linked list is: ");
+  printList(a);
+  min= min_int_linked_list(a);
+  printf("The smallest in the linked list is: %d", min);
+  large= max_int_linked_list(a);
+  printf("\nThe largest in the linked list is: %d", large);
+   return 0;
+}
+
+/* Sample Outputs:
+Enter elements for linked list: 67 34 12 98 34 2
+Linked list is: Head->67->34->12->98->34->2->NULL
+The smallest in the linked list is: 2
+The largest in the linked list is: 98
+Process returned 0 (0x0)   execution time : 6.013 s
+Press any key to continue.
+*/
+
+
+
+
+
+
+4. Write a program to swap positions of min and max node value in a given singly
+linked list. For instance, s1= head->3->1->2->NULL, the new one will be
+head->1->3->2->NULL through swap_int_linked_list(s1); following the same rule
+for char node value, it is like s2= head->C->A->B->NULL, calling
+swap_char_linked_list(s2) will get head->A ->C ->B->NULL
