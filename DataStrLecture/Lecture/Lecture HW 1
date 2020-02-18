@@ -4,7 +4,7 @@
  Author:    Sharon Cao
  Date:    1/16/2020
  Description: 
- Given a linked list, write a program to delete all elements with the value same as input
+ 1. Given a linked list, write a program to delete all elements with the value same as input
  argument key, such as input linked list a = "Head->1->2->1->3->NULL". After calling
  function Delete_LinkList_Node (a, 1), the new linked list will be "Head->2->3->NULL".
  Hint: take example programs as reference
@@ -38,28 +38,476 @@ LNode  *create_LinkList(void){
   return (head);
 }
 
-void  Delete_LinkList_Node(LNode *L, int i){  
-    int  j=0;  
-    LNode *p,*q;
-    p=L;  
-    q=L->next;
-    while( p->next!=NULL && j<i) {  
-        p=q;  
-        q=q->next;  
-        j++;  
+void  Delete_LinkList(LNode *L, int key){     
+  LNode *p=L, *q=L->next;
+  while(q != NULL)
+  {
+    if(q->data!=key)
+    {  
+      p=q;  
+      q=q->next;   
     }
-    if(j!=i){
-      printf("Out of range!\n");
-      exit(0); 
+    else if(q==NULL)
+      printf("Not existing element!!\n");
+    else if (q->data==key){  
+      p->next=q->next;  
+      p=p->next;
+      q=q->next;  
     }
-    else if(q==NULL){ 
-        printf("i is too big\n");
-        exit(0);
+  } 
+}
+
+void printList(LNode* list){
+  printf("Head");
+  while(1){
+    printf("->");
+    list = list->next;
+    if(list == NULL){
+      printf("NULL");
+      exit(0);
+    }
+    else if(list->next == NULL) {
+      printf("%d->NULL\n", list->data);
+      break;
+    }
+    else 
+      printf("%d",list->data);
+  }
+}
+int main(void) {
+  LNode *a;
+  printf("Enter numbers for linked list: ");
+  a = create_LinkList();
+  printf("Original linked list is: ");
+  printList(a);
+  int elem=1;
+  printf("Linked list after deleting is: ");
+  Delete_LinkList(a, elem);
+  printList(a);
+  return 0;
+}
+
+/*Sample Ouput
+Enter numbers for linked list: 1 2 3 1
+Original linked list is: Head->1->2->3->1->NULL
+Linked list after deleting is: Head->2->3->NULL
+*/
+
+
+
+/*
+********************************************************************************************
+ File Name: HW Assignment 1 Q2
+ Author:    Sharon Cao
+ Date:    1/16/2020
+ Description: 
+ 2. From a linked list, generate a program to delete all elements with the same value, such as
+ input linked list a = "Head->1->2->1->3->2->NULL". After calling function
+ Delete_Node_value(a), the new linked list will be "Head->3->NULL".
+********************************************************************************************
+ */
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef int ElemType;
+
+typedef  struct  Lnode
+{
+    ElemType  data;
+    struct   Lnode  *next;
+}LNode;
+
+LNode  *create_LinkList(void){
+  int data;
+  LNode *head, *p, *q;
+  head=p=(LNode *)malloc(sizeof(LNode));
+  head->next=NULL;
+  do{
+      scanf("%d",& data);
+      q= (LNode  *)malloc(sizeof(LNode));
+      q->data=data;
+      q->next=p->next;
+      p->next=q;
+      p=q ;
+  }while(getchar()!='\n');
+  return (head);
+}
+void printList(LNode* list){
+  printf("Head");
+  while(1){
+    printf("->");
+    list = list->next;
+    if(list == NULL){
+      printf("NULL");
+      exit(0);
+    }
+    else if(list->next == NULL) {
+      printf("%d->NULL\n", list->data);
+      break;
+    }
+    else
+      printf("%d",list->data);
+  }
+}
+
+int find_same(LNode *L)
+{
+  LNode *p, *q;
+  int temp;
+  p=L->next;
+  q=p->next;
+  while (p!=NULL)
+  {
+      temp=p->data;
+      //printf("temp is %d\n", temp);
+      while(q!=NULL)
+      {
+        if(q->data == temp)
+        {
+          return temp;
+        }
+        else
+          q=q->next;
+       }
+       p=p->next;
+       q=p->next;
+    }
+    if (p==NULL)
+        return -1;
+}
+
+void Delete_Node_value(LNode *L){
+  int key=find_same(L);
+  while (key!=-1)
+  {
+      LNode *p=L, *q=L->next;
+      while(q != NULL)
+      {
+        if(q->data!=key)
+        {
+          p=q;
+          q=q->next;
+        }
+        else if(q==NULL)
+          printf("Not existing element!!\n");
+        else if (q->data==key){
+          p->next=q->next;
+          p=p->next;
+          q=q->next;
+        }
       }
-    else{  
-        p->next=q->next;   
-        free(q);    
+      printList(L);
+      key=find_same(L);
+  }
+}
+
+int main(void) {
+  LNode *a;
+  printf("Enter numbers for linked list: ");
+  a = create_LinkList();
+  printf("Original linked list is: ");
+  printList(a);
+  printf("Linked list after deleting is: ");
+  Delete_Node_value(a);
+  return 0;
+}
+
+/*Sample Outputs
+Enter numbers for linked list: 3 6 5 7 2 3 4 7 8 9 1 5
+Original linked list is: Head->3->6->5->7->2->3->4->7->8->9->1->5->NULL
+Linked list after deleting is: Head->6->5->7->2->4->7->8->9->1->5->NULL
+Head->6->7->2->4->7->8->9->1->NULL
+Head->6->2->4->8->9->1->NULL
+
+Process returned -1073741819 (0xC0000005)   execution time : 12.123 s
+Press any key to continue.
+*/
+
+
+
+/*
+********************************************************************************************
+ File Name: HW Assignment 1 Q3
+ Author:    Sharon Cao
+ Date:    1/23/2020
+ Description: 
+ 3. In a linked list, create a program to delete all duplicated elements, such as input linked list
+ a = "Head->1->2->1->3->2->NULL". After calling function Delete_Dupl_Node(a), the
+ new linked list will be "Head->1->2->3->NULL".
+*********************************************************************************************
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef int ElemType;
+
+typedef  struct  Lnode
+{
+    ElemType  data;
+    struct   Lnode  *next;
+}LNode;
+
+void printList(LNode* list){
+  printf("Head");
+  while(1){
+    printf("->");
+    list = list->next;
+    if(list == NULL){
+      exit(0);
+      printf("NULL");
     }
+    else if(list->next == NULL) {
+      printf("%d->NULL\n", list->data);
+      break;
+    }
+    else
+      printf("%d",list->data);
+  }
+}
+
+LNode  *create_LinkList(void){
+  int data;
+  LNode *head, *p, *q;
+  head=p=(LNode *)malloc(sizeof(LNode));
+  head->next=NULL;
+  do{
+      scanf("%d",& data);
+      q= (LNode  *)malloc(sizeof(LNode));
+      q->data=data;
+      q->next=p->next;
+      p->next=q;
+      p=q ;
+  }while(getchar()!='\n');
+  return (head);
+}
+
+LNode *Delete_Dupl_Node(LNode *head)
+{
+    LNode *p, *q, *prev, *temp;
+
+    p = q = prev = head;
+    q = q->next;
+    while (p != NULL)
+    {
+        while (q != NULL && q->data != p->data)
+        {
+            prev = q;
+            q = q->next;
+        }
+        if (q == NULL)
+        {
+            p = p->next;
+            if (p != NULL)
+            {
+                q = p->next;
+            }
+        }
+        else if (q->data == p->data)
+        {
+            prev->next = q->next;
+            temp = q;
+            q = q->next;
+            free(temp);
+        }
+    }
+    printList(head);
+}
+int main(void) {
+  LNode *a, *b;
+  printf("Enter elements for linked list: ");
+  a = create_LinkList();
+  printf("Original linked list is: \n");
+  printList(a);
+  printf("The linked list after removing the duplicate: \n");
+  Delete_Dupl_Node(a);
+  return 0;
+}
+
+/*
+Sample Output:
+Enter elements for linked list: 4 3 4 1 2 3 6 7 8
+Original linked list is:
+Head->4->3->4->1->2->3->6->7->8->NULL
+The linked list after removing the duplicate:
+Head->4->3->1->2->6->7->8->NULL
+
+Process returned 0 (0x0)   execution time : 9.349 s
+Press any key to continue.
+*/
+
+
+
+/*
+********************************************************************************************
+ File Name: HW Assignment 1 Q4
+ Author:    Sharon Cao
+ Date:    1/23/2020
+ Description: 
+ 4. Write a program to reverse given linked list, like input linked list
+ a = "Head->1->2->3->NULL". Through calling function Reverse_Node(a), the new linked
+ list will be "Head->3->2->1->NULL".
+*********************************************************************************************
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef int ElemType;
+
+typedef  struct  Lnode
+{
+    ElemType  data;
+    struct   Lnode  *next;
+}LNode;
+
+void printList(LNode* list){
+  printf("Head");
+  while(1){
+    printf("->");
+    list = list->next;
+    if(list == NULL){
+      printf("NULL");
+      exit(0);
+    }
+    else if(list->next == NULL) {
+      printf("%d->NULL\n", list->data);
+      break;
+    }
+    else
+      printf("%d",list->data);
+  }
+}
+
+LNode  *create_LinkList(void){
+  int data;
+  LNode *head, *p;
+  head= (LNode  *) malloc( sizeof(LNode));
+  head->next=NULL;
+  printf("Please enter elements for linked list: \n");
+  do {
+    scanf("%d", &data) ;
+    p= (LNode  *)malloc(sizeof(LNode));
+    p->data = data;
+    p->next=head->next;
+    head->next=p ;
+  }
+  while(getchar()!='\n');
+  return (head);
+}
+
+LNode  *push(LNode* head, int data){
+  LNode *p;
+  p= (LNode  *) malloc( sizeof(LNode));
+  p->data = data;
+  p->next=head->next;
+  head->next=p;
+  //printList(head);
+  return (head);
+}
+
+LNode *reverse(LNode* L)
+{
+  LNode *head, *p;
+  int data;
+  head = (LNode *) malloc (sizeof(LNode));
+  head->next = NULL;
+  p=L->next;
+  while (p != NULL)
+  {
+      data = p->data;
+      //printf("%d", data);
+      head = push (head, data);
+      //printList(head);
+      p = p->next;
+  }
+  return (head);
+}
+
+
+int main(void) {
+  LNode *a;
+  a = create_LinkList();
+  printf("Original Linked list is: \n");
+  printList(a);
+  printf("Reversed Linked list is: \n");
+  a=reverse(a);
+  printList(a);
+  return 0;
+}
+ 
+/*Sample Outputs
+Please enter elements for linked list:
+1 2 3 4 5 6 7 8 9
+Original Linked list is:
+Head->9->8->7->6->5->4->3->2->1->NULL
+Reversed Linked list is:
+Head->1->2->3->4->5->6->7->8->9->NULL
+
+Process returned 0 (0x0)   execution time : 6.660 s
+Press any key to continue.
+*/
+
+/*
+********************************************************************************************
+ File Name: HW Assignment 1 Q5
+ Author:    Sharon Cao
+ Date:    1/16/2020
+ Description: 
+ 5. From given a linked list with integer value nodes, calculate average value, for instance,
+ input linked list a = "Head->1->2->3->NULL". By calling function Average_List(a),
+ average value is (1+2+3) / 3=2.0 (floating data type).
+********************************************************************************************
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef int ElemType;
+
+typedef  struct  Lnode
+{   
+    ElemType  data;   
+    struct   Lnode  *next;     
+}LNode;
+      
+LNode  *create_LinkList(void){    
+  int data;
+  LNode *head, *p, *q;
+  head=p=(LNode *)malloc(sizeof(LNode)); 
+  head->next=NULL;       
+  do{ 
+      scanf("%d",& data);
+      q= (LNode  *)malloc(sizeof(LNode)); 
+      q->data=data;     
+      q->next=p->next;  
+      p->next=q; 
+      p=q ; 
+  }while(getchar()!='\n');
+  return (head);
+}
+
+void  Average_List(LNode *L)
+{  
+  int  counter=1;
+  int total = 0;
+  while(1){
+    L = L->next;
+    if(L != NULL)
+    {
+      //printf("%d",L->data);
+      total += L->data;
+      counter ++;
+    }
+    else
+      break;
+  }
+  //printf("\n%d %d", counter, total);
+  float average;
+  average = (float)total / (float)(counter-1);
+  printf("Average of Linked list is: %.2f", average);
 }
 
 void printList(LNode* list){
@@ -83,46 +531,12 @@ int main(void) {
   LNode *a;
   a = create_LinkList();
   printList(a);
-  int n;
-  printf("Please enter the index to delete: ");
-  scanf("%d", &n);
-  Delete_LinkList_Node(a, n);
-  printList(a);
+  Average_List(a);
   return 0;
 }
 
-/*Sample Ouput
-5 4 7 3 9 4 2
-Head->5->4->7->3->9->4->2->NULL
-Please enter the index to delete: 4
-Head->5->4->7->3->4->2->NULL
+/*Sample Output
+1 2 3 4 5 6
+Head->1->2->3->4->5->6->NULL
+Average of Linked list is: 3.50
 */
-
-
-
-
-
-2. From a linked list, generate a program to delete all elements with the same value, such as
-input linked list a = "Head->1->2->1->3->2->NULL". After calling function
-Delete_Node_value(a), the new linked list will be "Head->3->NULL".
-
-
-
-
-3. In a linked list, create a program to delete all duplicated elements, such as input linked list
-a = "Head->1->2->1->3->2->NULL". After calling function Delete_Dupl_Node(a), the
-new linked list will be "Head->1->2->3->NULL".
-
-
-
-
-4. Write a program to reverse given linked list, like input linked list
-a = "Head->1->2->3->NULL". Through calling function Reverse_Node(a), the new linked
-list will be "Head->3->2->1->NULL".
-
-
-
-
-5. From given a linked list with integer value nodes, calculate average value, for instance,
-input linked list a = "Head->1->2->3->NULL". By calling function Average_List(a),
-average value is (1+2+3) / 3=2.0 (floating data type).
